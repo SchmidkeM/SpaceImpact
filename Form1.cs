@@ -11,14 +11,15 @@ namespace SpaceImpact
     public partial class SpaceImpact : Form
     {
         private static readonly Random Rnd = new Random();
-        private Player _player = new Player();
-        private Boss _boss = new Boss();
-        private Heart _heart = new Heart();
+        private Player _player;
+        private Boss _boss;
+        private Heart _heart;
         private readonly List<Minion> _minions = new List<Minion>();
-        private readonly String _imgPath = Path.Combine(AppContext.BaseDirectory, "images");
-        private readonly String _soundPath = Path.Combine(AppContext.BaseDirectory, "sounds");
+        private static readonly Dictionary<string, Image> Images = new Dictionary<string, Image>();
+        private static readonly Dictionary<string, SoundPlayer> Sounds = new Dictionary<string, SoundPlayer>();
+        private readonly string _imgPath = Path.Combine(AppContext.BaseDirectory, "Images");
+        private readonly string _soundPath = Path.Combine(AppContext.BaseDirectory, "Sounds");
         private readonly int[] _spawnIntervals = { 70, 110, 150, 170, 420 };
-        private static int _speed = 2;
         private static Keys _activeKey;
         private static bool
             _gameInSession,
@@ -27,23 +28,7 @@ namespace SpaceImpact
             _darkMode;
         private static int
             _timeElapsed,
-            _score,
-            _bossesKilled;
-        private static Image
-            _imgShip,
-            _imgShipGreen,
-            _imgHeart,
-            _imgHeartGreen,
-            _imgEnemy,
-            _imgEnemyGreen,
-            _imgBoss,
-            _imgBossGreen,
-            _imgSurface,
-            _imgSurfaceGreen;
-        private static SoundPlayer _soundShoot,
-            _soundHit,
-            _soundHitBoss,
-            _soundHeal;
+            _score;
 
         public SpaceImpact()
         {
@@ -55,21 +40,23 @@ namespace SpaceImpact
             LoadImages();
             SetImages();
             LoadSounds();
+            _player = new Player();
+            _heart = new Heart();
+            _boss = new Boss();
         }
 
         private void LoadImages()
         {
-            _imgShip = Image.FromFile(Path.Combine(_imgPath, "Ship.png"));
-            _imgShipGreen = Image.FromFile(Path.Combine(_imgPath, "ShipGreen.png"));
-            _imgHeart = Image.FromFile(Path.Combine(_imgPath, "Heart.png"));
-            _imgHeartGreen = Image.FromFile(Path.Combine(_imgPath, "HeartGreen.png"));
-            _imgEnemy = Image.FromFile(Path.Combine(_imgPath, "Enemy.png"));
-            _imgEnemyGreen = Image.FromFile(Path.Combine(_imgPath, "EnemyGreen.png"));
-            _imgBoss = Image.FromFile(Path.Combine(_imgPath, "Boss.png"));
-            _imgBossGreen = Image.FromFile(Path.Combine(_imgPath, "BossGreen.png"));
-            _imgSurface = Image.FromFile(Path.Combine(_imgPath, "Surface.png"));
-            _imgSurfaceGreen = Image.FromFile(Path.Combine(_imgPath, "SurfaceGreen.png"));
-
+            Images.Add("ship", Image.FromFile(Path.Combine(_imgPath, "ship.png")));
+            Images.Add("shipGreen", Image.FromFile(Path.Combine(_imgPath, "shipGreen.png")));
+            Images.Add("heart", Image.FromFile(Path.Combine(_imgPath, "heart.png")));
+            Images.Add("heartGreen", Image.FromFile(Path.Combine(_imgPath, "heartGreen.png")));
+            Images.Add("minion", Image.FromFile(Path.Combine(_imgPath, "minion.png")));
+            Images.Add("minionGreen", Image.FromFile(Path.Combine(_imgPath, "minionGreen.png")));
+            Images.Add("boss", Image.FromFile(Path.Combine(_imgPath, "boss.png")));
+            Images.Add("bossGreen", Image.FromFile(Path.Combine(_imgPath, "bossGreen.png")));
+            Images.Add("surface", Image.FromFile(Path.Combine(_imgPath, "surface.png")));
+            Images.Add("surfaceGreen", Image.FromFile(Path.Combine(_imgPath, "surfaceGreen.png")));
         }
 
         private void SetImages()
@@ -79,26 +66,25 @@ namespace SpaceImpact
                 if (o.GetType() == typeof(PictureBox))
                     ((PictureBox)o).BackColor = Color.Transparent;
             }
-            Surface.BackgroundImage = _imgSurface;
-            Surface2.BackgroundImage = _imgSurface;
-            Heart1.BackgroundImage = _imgHeart;
-            Heart2.BackgroundImage = _imgHeart;
-            Heart3.BackgroundImage = _imgHeart;
-            Heart4.BackgroundImage = _imgHeart;
-            Heart5.BackgroundImage = _imgHeart;
+            Surface.BackgroundImage = Images["surface"];
+            Surface2.BackgroundImage = Images["surface"];
+            Heart1.BackgroundImage = Images["heart"];
+            Heart2.BackgroundImage = Images["heart"];
+            Heart3.BackgroundImage = Images["heart"];
+            Heart4.BackgroundImage = Images["heart"];
+            Heart5.BackgroundImage = Images["heart"];
         }
 
         private void LoadSounds()
         {
-            _soundShoot = new SoundPlayer(Path.Combine(_soundPath, "Shoot.wav"));
-            _soundHit = new SoundPlayer(Path.Combine(_soundPath, "Hit.wav"));
-            _soundHitBoss = new SoundPlayer(Path.Combine(_soundPath, "HitBoss.wav"));
-            _soundHeal = new SoundPlayer(Path.Combine(_soundPath, "Heal.wav"));
+            Sounds.Add("shoot", new SoundPlayer(Path.Combine(_soundPath, "shoot.wav")));
+            Sounds.Add("hit", new SoundPlayer(Path.Combine(_soundPath, "hit.wav")));
+            Sounds.Add("hitBoss", new SoundPlayer(Path.Combine(_soundPath, "hitBoss.wav")));
+            Sounds.Add("heal", new SoundPlayer(Path.Combine(_soundPath, "heal.wav")));
         }
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            _player = new Player();
             this.Controls.Add(_player.Model);
             _gameInSession = true;
             InfoLabel.Visible = false;
@@ -113,20 +99,20 @@ namespace SpaceImpact
             _timeElapsed++;
             DeleteEntitiesOutsideWindow();
             CheckCollisions();
-            if (_timeElapsed == 1000)
-                _timeElapsed = 0;
             MoveSurface();
             _player.MoveProjectiles();
             if (_player.Cooldown != 0)
                 _player.Cooldown--;
+
             if (_heartInPlay)
                 _heart.Move();
-            else if (_timeElapsed % (_spawnIntervals[Rnd.Next(0, 4)] * 20) == 0)
+            else if (_timeElapsed % (_spawnIntervals[Rnd.Next(0, 4)] * 50) == 0)
             {
                 _heart = new Heart();
                 this.Controls.Add(_heart.Model);
                 _heartInPlay = true;
             }
+
             if (_bossMode)
             {
                 _boss.Move();
@@ -150,12 +136,13 @@ namespace SpaceImpact
                     _minions.Add(new Minion());
                     this.Controls.Add(_minions.Last().Model);
                 }
-                if (_score > 0 && (_score - _bossesKilled * 150) % 250 == 0)
+                if (_timeElapsed == 3000)
                 {
                     ClearMinions();
                     _boss = new Boss();
                     this.Controls.Add(_boss.Model);
                     _bossMode = true;
+                    _timeElapsed = 0;
                 }
             }
         }
@@ -269,8 +256,8 @@ namespace SpaceImpact
 
         private void MoveSurface()
         {
-            Surface.Left -= _speed;
-            Surface2.Left -= _speed;
+            Surface.Left -= 2;
+            Surface2.Left -= 2;
             if (Surface.Right == 0) Surface.Left = 800;
             if (Surface2.Right == 0) Surface2.Left = 800;
         }
@@ -288,6 +275,8 @@ namespace SpaceImpact
                 {
                     this.Controls.Remove(_minions[i].Model);
                     _minions.Remove(_minions[i]);
+                    _score -= 5;
+                    UpdateScore();
                 }
             if (_bossMode)
                 for (int i = 0; i < _boss.Projectiles.Count; i++)
@@ -335,7 +324,7 @@ namespace SpaceImpact
                         _player.Projectiles.Remove(_player.Projectiles[i]);
                         _score += 10;
                         UpdateScore();
-                        _soundHit.Play();
+                        Sounds["hit"].Play();
                         return;
                     }
                 }
@@ -352,7 +341,7 @@ namespace SpaceImpact
                     _boss.Health--;
                     _score += 5;
                     UpdateScore();
-                    _soundHitBoss.Play();
+                    Sounds["hitBoss"].Play();
                     return;
                 }
             }
@@ -369,7 +358,7 @@ namespace SpaceImpact
                     _player.Health--;
                     UpdateHealth();
                     ClearMinions();
-                    _soundHit.Play();
+                    Sounds["hit"].Play();
                     return;
                 }
             }
@@ -385,7 +374,7 @@ namespace SpaceImpact
                     _boss.Projectiles.Remove(_boss.Projectiles[i]);
                     _boss.Health--;
                     UpdateHealth();
-                    _soundHit.Play();
+                    Sounds["hit"].Play();
                     return;
                 }
             }
@@ -400,7 +389,7 @@ namespace SpaceImpact
                 if (_player.Health < 5)
                 {
                     _player.Health++;
-                    _soundHeal.Play();
+                    Sounds["heal"].Play();
                     UpdateHealth();
                 }
             }
@@ -422,7 +411,6 @@ namespace SpaceImpact
         {
             _bossMode = false;
             _boss.Health = 30;
-            _bossesKilled++;
             _score += 10;
             UpdateScore();
             this.Controls.Remove(_boss.Model);
@@ -473,25 +461,25 @@ namespace SpaceImpact
         {
             if (_darkMode)
             {
-                _player.Model.BackgroundImage = _imgShipGreen;
-                Surface.BackgroundImage = _imgSurfaceGreen;
-                Surface2.BackgroundImage = _imgSurfaceGreen;
-                Heart1.BackgroundImage = _imgHeartGreen;
-                Heart2.BackgroundImage = _imgHeartGreen;
-                Heart3.BackgroundImage = _imgHeartGreen;
-                Heart4.BackgroundImage = _imgHeartGreen;
-                Heart5.BackgroundImage = _imgHeartGreen;
+                _player.Model.BackgroundImage = Images["shipGreen"];
+                Surface.BackgroundImage = Images["surfaceGreen"];
+                Surface2.BackgroundImage = Images["surfaceGreen"];
+                Heart1.BackgroundImage = Images["heartGreen"];
+                Heart2.BackgroundImage = Images["heartGreen"];
+                Heart3.BackgroundImage = Images["heartGreen"];
+                Heart4.BackgroundImage = Images["heartGreen"];
+                Heart5.BackgroundImage = Images["heartGreen"];
             }
             else
             {
-                _player.Model.BackgroundImage = _imgShip;
-                Surface.BackgroundImage = _imgSurface;
-                Surface2.BackgroundImage = _imgSurface;
-                Heart1.BackgroundImage = _imgHeart;
-                Heart2.BackgroundImage = _imgHeart;
-                Heart3.BackgroundImage = _imgHeart;
-                Heart4.BackgroundImage = _imgHeart;
-                Heart5.BackgroundImage = _imgHeart;
+                _player.Model.BackgroundImage = Images["ship"];
+                Surface.BackgroundImage = Images["surface"];
+                Surface2.BackgroundImage = Images["surface"];
+                Heart1.BackgroundImage = Images["heart"];
+                Heart2.BackgroundImage = Images["heart"];
+                Heart3.BackgroundImage = Images["heart"];
+                Heart4.BackgroundImage = Images["heart"];
+                Heart5.BackgroundImage = Images["heart"];
             }
         }
 
@@ -577,17 +565,9 @@ namespace SpaceImpact
                 if (Model.Right < 0 || Model.Left > 800)
                     OutTheWindow = true;
             }
-
-            public abstract void Move();
         }
 
-        public interface IShooters
-        {
-            void Shoot();
-            void MoveProjectiles();
-        }
-
-        public class Player : Entity, IShooters
+        public class Player : Entity
         {
             public List<Projectile> Projectiles;
             public int Cooldown;
@@ -598,7 +578,7 @@ namespace SpaceImpact
                 {
                     Size = new Size(100, 70),
                     BackColor = Color.Transparent,
-                    BackgroundImage = _darkMode ? _imgShipGreen : _imgShip,
+                    BackgroundImage = _darkMode ? Images["shipGreen"] : Images["ship"],
                     Location = new Point(20, 220)
                 };
                 Health = 3;
@@ -606,7 +586,7 @@ namespace SpaceImpact
                 Cooldown = 0;
             }
 
-            public override void Move()
+            public void Move()
             {
                 switch (_activeKey)
                 {
@@ -633,7 +613,7 @@ namespace SpaceImpact
             {
                 Projectiles.Add(new Projectile(this));
                 Cooldown = 30;
-                _soundShoot.Play();
+                Sounds["shoot"].Play();
             }
 
             public void MoveProjectiles()
@@ -661,7 +641,7 @@ namespace SpaceImpact
                     _friendly = true;
             }
 
-            public override void Move()
+            public void Move()
             {
                 if (_friendly)
                     Model.Left += 10;
@@ -679,7 +659,7 @@ namespace SpaceImpact
                 {
                     Size = new Size(40, 40),
                     BackColor = Color.Transparent,
-                    BackgroundImage = _darkMode ? _imgHeartGreen : _imgHeart,
+                    BackgroundImage = _darkMode ? Images["heartGreen"] : Images["heart"],
                     Location = new Point(800, 250)
                 };
                 UpperBound = 60;
@@ -687,7 +667,7 @@ namespace SpaceImpact
                 WiggleDirection = "up";
             }
 
-            public override void Move()
+            public void Move()
             {
                 Model.Left--;
                 if (WiggleDirection == "up")
@@ -707,14 +687,14 @@ namespace SpaceImpact
                 {
                     Size = new Size(40, 40),
                     BackColor = Color.Transparent,
-                    BackgroundImage = _darkMode ? _imgEnemyGreen : _imgEnemy,
+                    BackgroundImage = _darkMode ? Images["minionGreen"] : Images["minion"],
                     Location = new Point(800, spawnY)
                 };
                 UpperBound = spawnY - 60;
                 LowerBound = spawnY + 60;
                 WiggleDirection = "up";
             }
-            public override void Move()
+            public void Move()
             {
                 Model.Left -= 2;
                 if (WiggleDirection == "up")
@@ -725,7 +705,7 @@ namespace SpaceImpact
             }
         }
 
-        public class Boss : Entity, IShooters
+        public class Boss : Entity
         {
             public List<Projectile> Projectiles;
             public int Cooldown;
@@ -737,7 +717,7 @@ namespace SpaceImpact
                 {
                     Size = new Size(152, 160),
                     BackColor = Color.Transparent,
-                    BackgroundImage = _darkMode ? _imgBossGreen : _imgBoss,
+                    BackgroundImage = _darkMode ? Images["bossGreen"] : Images["boss"],
                     Location = new Point(800, 250)
                 };
                 UpperBound = 60;
@@ -748,7 +728,7 @@ namespace SpaceImpact
                 Cooldown = 0;
             }
 
-            public override void Move()
+            public void Move()
             {
                 if (Model.Right > 800)
                     Model.Left--;
@@ -763,7 +743,7 @@ namespace SpaceImpact
             {
                 Projectiles.Add(new Projectile(this));
                 Cooldown = 100;
-                _soundShoot.Play();
+                Sounds["shoot"].Play();
             }
 
             public void MoveProjectiles()

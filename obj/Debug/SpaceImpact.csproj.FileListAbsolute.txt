@@ -8,3 +8,13 @@ C:\Users\Aynar\OneDrive\Dokumenty\ZP3CS\SpaceImpact\SpaceImpact\obj\Debug\SpaceI
 C:\Users\Aynar\OneDrive\Dokumenty\ZP3CS\SpaceImpact\SpaceImpact\obj\Debug\SpaceImpact.exe
 C:\Users\Aynar\OneDrive\Dokumenty\ZP3CS\SpaceImpact\SpaceImpact\obj\Debug\SpaceImpact.pdb
 C:\Users\Aynar\OneDrive\Dokumenty\ZP3CS\SpaceImpact\SpaceImpact\obj\Debug\SpaceImpact.SpaceImpact.resources
+C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\bin\Debug\SpaceImpact.exe.config
+C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\bin\Debug\SpaceImpact.exe
+C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\bin\Debug\SpaceImpact.pdb
+C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\obj\Debug\SpaceImpact.csprojAssemblyReference.cache
+C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\obj\Debug\SpaceImpact.SpaceImpact.resources
+C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\obj\Debug\SpaceImpact.Properties.Resources.resources
+C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\obj\Debug\SpaceImpact.csproj.GenerateResource.cache
+C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\obj\Debug\SpaceImpact.csproj.CoreCompileInputs.cache
+C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\obj\Debug\SpaceImpact.exe
+C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\obj\Debug\SpaceImpact.pdb
