@@ -106,7 +106,7 @@ namespace SpaceImpact
 
             if (_heartInPlay)
                 _heart.Move();
-            else if (_timeElapsed % (_spawnIntervals[Rnd.Next(0, 4)] * 50) == 0)
+            else if (_timeElapsed == 1500)
             {
                 _heart = new Heart();
                 this.Controls.Add(_heart.Model);
@@ -372,7 +372,7 @@ namespace SpaceImpact
                 {
                     this.Controls.Remove(_boss.Projectiles[i].Model);
                     _boss.Projectiles.Remove(_boss.Projectiles[i]);
-                    _boss.Health--;
+                    _player.Health--;
                     UpdateHealth();
                     Sounds["hit"].Play();
                     return;
