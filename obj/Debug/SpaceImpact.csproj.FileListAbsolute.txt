@@ -18,3 +18,13 @@ C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\obj\Debug\SpaceImpact.cspro
 C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\obj\Debug\SpaceImpact.csproj.CoreCompileInputs.cache
 C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\obj\Debug\SpaceImpact.exe
 C:\Users\Aynar\OneDrive\Dokumenty\GitHub\SpaceImpact\obj\Debug\SpaceImpact.pdb
+C:\Users\Martin Schmidke\OneDrive - Univerzita Palackého v Olomouci\Dokumenty\.GitHub\SpaceImpact\obj\Debug\SpaceImpact.csprojAssemblyReference.cache
+C:\Users\Martin Schmidke\OneDrive - Univerzita Palackého v Olomouci\Dokumenty\.GitHub\SpaceImpact\obj\Debug\SpaceImpact.SpaceImpact.resources
+C:\Users\Martin Schmidke\OneDrive - Univerzita Palackého v Olomouci\Dokumenty\.GitHub\SpaceImpact\obj\Debug\SpaceImpact.Properties.Resources.resources
+C:\Users\Martin Schmidke\OneDrive - Univerzita Palackého v Olomouci\Dokumenty\.GitHub\SpaceImpact\obj\Debug\SpaceImpact.csproj.GenerateResource.cache
+C:\Users\Martin Schmidke\OneDrive - Univerzita Palackého v Olomouci\Dokumenty\.GitHub\SpaceImpact\obj\Debug\SpaceImpact.csproj.CoreCompileInputs.cache
+C:\Users\Martin Schmidke\OneDrive - Univerzita Palackého v Olomouci\Dokumenty\.GitHub\SpaceImpact\obj\Debug\SpaceImpact.exe
+C:\Users\Martin Schmidke\OneDrive - Univerzita Palackého v Olomouci\Dokumenty\.GitHub\SpaceImpact\obj\Debug\SpaceImpact.pdb
+C:\Users\Martin Schmidke\OneDrive - Univerzita Palackého v Olomouci\Dokumenty\.GitHub\SpaceImpact\bin\Debug\SpaceImpact.exe.config
+C:\Users\Martin Schmidke\OneDrive - Univerzita Palackého v Olomouci\Dokumenty\.GitHub\SpaceImpact\bin\Debug\SpaceImpact.exe
+C:\Users\Martin Schmidke\OneDrive - Univerzita Palackého v Olomouci\Dokumenty\.GitHub\SpaceImpact\bin\Debug\SpaceImpact.pdb

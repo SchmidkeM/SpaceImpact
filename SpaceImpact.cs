@@ -11,22 +11,22 @@ namespace SpaceImpact
     public partial class SpaceImpact : Form
     {
         private static readonly Random Rnd = new Random();
-        private Player _player;
-        private Boss _boss;
-        private Heart _heart;
-        private readonly List<Minion> _minions = new List<Minion>();
-        private static readonly Dictionary<string, Image> Images = new Dictionary<string, Image>();
-        private static readonly Dictionary<string, SoundPlayer> Sounds = new Dictionary<string, SoundPlayer>();
-        private readonly string _imgPath = Path.Combine(AppContext.BaseDirectory, "Images");
-        private readonly string _soundPath = Path.Combine(AppContext.BaseDirectory, "Sounds");
-        private readonly int[] _spawnIntervals = { 70, 110, 150, 170, 420 };
-        private static Keys _activeKey;
-        private static bool
+        public Player _player;
+        public Boss _boss;
+        public Heart _heart;
+        public readonly List<Minion> _minions = new List<Minion>();
+        public static readonly Dictionary<string, Image> Images = new Dictionary<string, Image>();
+        public static readonly Dictionary<string, SoundPlayer> Sounds = new Dictionary<string, SoundPlayer>();
+        public readonly string _imgPath = Path.Combine(AppContext.BaseDirectory, "Images");
+        public readonly string _soundPath = Path.Combine(AppContext.BaseDirectory, "Sounds");
+        public readonly int[] _spawnIntervals = { 70, 110, 150, 170, 420 };
+        public static Keys _activeKey;
+        public static bool
             _gameInSession,
             _heartInPlay,
             _bossMode,
             _darkMode;
-        private static int
+        public static int
             _timeElapsed,
             _score;
 
@@ -546,211 +546,6 @@ namespace SpaceImpact
             RestartButton.Visible = false;
             _player.Model.Visible = true;
             StartButton_Click(sender, e);
-        }
-
-        public abstract class Entity
-        {
-            public PictureBox Model;
-            protected int UpperBound;
-            protected int LowerBound;
-            protected string WiggleDirection;
-            public bool OutTheWindow;
-
-            protected void CheckBoundries()
-            {
-                if (Model.Top < UpperBound)
-                    WiggleDirection = "down";
-                if (Model.Bottom > LowerBound)
-                    WiggleDirection = "up";
-                if (Model.Right < 0 || Model.Left > 800)
-                    OutTheWindow = true;
-            }
-        }
-
-        public class Player : Entity
-        {
-            public List<Projectile> Projectiles;
-            public int Cooldown;
-            public int Health;
-            public Player()
-            {
-                Model = new PictureBox
-                {
-                    Size = new Size(100, 70),
-                    BackColor = Color.Transparent,
-                    BackgroundImage = _darkMode ? Images["shipGreen"] : Images["ship"],
-                    Location = new Point(20, 220)
-                };
-                Health = 3;
-                Projectiles = new List<Projectile>();
-                Cooldown = 0;
-            }
-
-            public void Move()
-            {
-                switch (_activeKey)
-                {
-                    case Keys.Down:
-                        if (Model.Bottom < 460)
-                            Model.Top += 4;
-                        break;
-                    case Keys.Up:
-                        if (Model.Top > 60)
-                            Model.Top -= 4;
-                        break;
-                    case Keys.Left:
-                        if (Model.Left > 0)
-                            Model.Left -= 4;
-                        break;
-                    case Keys.Right:
-                        if (Model.Right < 600)
-                            Model.Left += 4;
-                        break;
-                }
-            }
-
-            public void Shoot()
-            {
-                Projectiles.Add(new Projectile(this));
-                Cooldown = 30;
-                Sounds["shoot"].Play();
-            }
-
-            public void MoveProjectiles()
-            {
-                foreach (Projectile p in Projectiles)
-                    p.Move();
-            }
-        }
-
-        public class Projectile : Entity
-        {
-            private readonly bool _friendly;
-            public Projectile(Entity sender)
-            {
-                var m = sender.Model;
-                var spawnX = m.Left + m.Size.Width / 2 - 20;
-                var spawnY = m.Top + m.Size.Height / 2 - 10;
-                Model = new PictureBox
-                {
-                    Size = new Size(20, 10),
-                    BackColor = _darkMode ? Color.Olive : Color.Black,
-                    Location = new Point(spawnX, spawnY)
-                };
-                if (sender.GetType() == typeof(Player))
-                    _friendly = true;
-            }
-
-            public void Move()
-            {
-                if (_friendly)
-                    Model.Left += 10;
-                else
-                    Model.Left -= 5;
-                this.CheckBoundries();
-            }
-        }
-
-        public class Heart : Entity
-        {
-            public Heart()
-            {
-                Model = new PictureBox
-                {
-                    Size = new Size(40, 40),
-                    BackColor = Color.Transparent,
-                    BackgroundImage = _darkMode ? Images["heartGreen"] : Images["heart"],
-                    Location = new Point(800, 250)
-                };
-                UpperBound = 60;
-                LowerBound = 460;
-                WiggleDirection = "up";
-            }
-
-            public void Move()
-            {
-                Model.Left--;
-                if (WiggleDirection == "up")
-                    Model.Top--;
-                else
-                    Model.Top++;
-                this.CheckBoundries();
-            }
-        }
-
-        public class Minion : Entity
-        {
-            public Minion()
-            {
-                var spawnY = Rnd.Next(130, 350);
-                Model = new PictureBox
-                {
-                    Size = new Size(40, 40),
-                    BackColor = Color.Transparent,
-                    BackgroundImage = _darkMode ? Images["minionGreen"] : Images["minion"],
-                    Location = new Point(800, spawnY)
-                };
-                UpperBound = spawnY - 60;
-                LowerBound = spawnY + 60;
-                WiggleDirection = "up";
-            }
-            public void Move()
-            {
-                Model.Left -= 2;
-                if (WiggleDirection == "up")
-                    Model.Top--;
-                else
-                    Model.Top++;
-                this.CheckBoundries();
-            }
-        }
-
-        public class Boss : Entity
-        {
-            public List<Projectile> Projectiles;
-            public int Cooldown;
-            public int Health;
-
-            public Boss()
-            {
-                Model = new PictureBox
-                {
-                    Size = new Size(152, 160),
-                    BackColor = Color.Transparent,
-                    BackgroundImage = _darkMode ? Images["bossGreen"] : Images["boss"],
-                    Location = new Point(800, 250)
-                };
-                UpperBound = 60;
-                LowerBound = 460;
-                WiggleDirection = "up";
-                Health = 30;
-                Projectiles = new List<Projectile>();
-                Cooldown = 0;
-            }
-
-            public void Move()
-            {
-                if (Model.Right > 800)
-                    Model.Left--;
-                if (WiggleDirection == "up")
-                    Model.Top--;
-                else
-                    Model.Top++;
-                this.CheckBoundries();
-            }
-
-            public void Shoot()
-            {
-                Projectiles.Add(new Projectile(this));
-                Cooldown = 100;
-                Sounds["shoot"].Play();
-            }
-
-            public void MoveProjectiles()
-            {
-                foreach (Projectile p in Projectiles)
-                    p.Move();
-            }
         }
     }
 }
